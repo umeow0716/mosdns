@@ -21,6 +21,7 @@ package doh
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/base64"
 	"encoding/binary"
 	"fmt"
@@ -51,6 +52,7 @@ type Upstream struct {
 }
 
 func NewUpstream(endPoint string, rt http.RoundTripper, logger *zap.Logger) (*Upstream, error) {
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	req, err := http.NewRequest(http.MethodGet, endPoint, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse http request, %w", err)
